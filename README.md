@@ -11,7 +11,7 @@ narrator: US English Female
 
 comment:  A set of macros for plotting diagrams with plantUML in LiaScript.
 
-script:   http://s.plantuml.com/synchro2.min.js
+script:   https://s.plantuml.com/synchro2.min.js
 
 @plantUML: @plantUML.exec(@uid,@0)
 
@@ -136,7 +136,7 @@ The two main-macros make use of `@plantUML.exec` which receives two parameters.
 The first one is a unique id and the second one contains the code.
 
 ````html
-script:   http://s.plantuml.com/synchro2.min.js
+script:   https://s.plantuml.com/synchro2.min.js
 
 @plantUML: @plantUML.exec(@uid,@0)
 
