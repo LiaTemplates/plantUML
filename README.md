@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    andre.dietrich@ovgu.de
 
-version:  0.0.1
+version:  0.0.2
 
 language: en
 
@@ -30,12 +30,13 @@ let compressed = compressor.compress();
 let dest = "http://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
 
 document.getElementById('plant@0').src = dest;
+document.getElementById('plant@0').hidden = false;
 
 dest;
 </script>
 
 <span>
-<img id="plant@0" src="@0">
+<img id="plant@0" src="@0" hidden="true">
 </span>
 
 @end
