@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    andre.dietrich@ovgu.de
 
-version:  0.0.3
+version:  0.0.4
 
 language: en
 
@@ -28,7 +28,7 @@ var draw = function () {
     }
     let compressor = new Zopfli.RawDeflate(arr);
     let compressed = compressor.compress();
-    let dest = "http://www.plantuml.com/plantuml" + "/png/"+encode64_(compressed);
+    let dest = "https://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
 
     document.getElementById('plant@0').src = dest;
     document.getElementById('plant@0').hidden = false;
