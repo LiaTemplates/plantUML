@@ -1,15 +1,16 @@
 <!--
 author:   André Dietrich
 
-email:    andre.dietrich@ovgu.de
+email:    LiaScript@web.de
 
-version:  0.0.4
+version:  0.0.5
 
 language: en
 
-narrator: US English Female
+narrator: US English Male
 
-comment:  A set of macros for plotting diagrams with plantUML in LiaScript.
+comment:  A set of macros for plotting diagrams with plantUML in LiaScript. See
+          also https://plantuml.com for more information.
 
 script:   https://s.plantuml.com/synchro2.min.js
 
@@ -152,19 +153,27 @@ script:   https://s.plantuml.com/synchro2.min.js
 
 @plantUML.exec
 <script>
-let s = unescape(encodeURIComponent(`@1`));
-var arr = [];
-for (let i = 0; i < s.length; i++) {
-  arr.push(s.charCodeAt(i));
-}
+var draw = function () {
+  try {
+    let s = unescape(encodeURIComponent(`@1`));
+    var arr = [];
+    for (let i = 0; i < s.length; i++) {
+      arr.push(s.charCodeAt(i));
+    }
+    let compressor = new Zopfli.RawDeflate(arr);
+    let compressed = compressor.compress();
+    let dest = "https://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
 
-let compressor = new Zopfli.RawDeflate(arr);
-let compressed = compressor.compress();
-let dest = "http://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
+    document.getElementById('plant@0').src = dest;
+    document.getElementById('plant@0').hidden = false;
 
-document.getElementById('plant@0').src = dest;
+    return dest;
+  } catch (e) {
+    setTimeout( draw, 100)
+  }
+};
 
-dest;
+draw()
 </script>
 
 <span>
