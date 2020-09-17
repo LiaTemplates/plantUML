@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.5
+version:  0.0.6
 
 language: en
 
@@ -14,7 +14,7 @@ comment:  A set of macros for plotting diagrams with plantUML in LiaScript. See
 
 script:   https://s.plantuml.com/synchro2.min.js
 
-@plantUML: @plantUML.exec(@uid,@0)
+@plantUML: @plantUML.exec(@uid,```@0```)
 
 @plantUML.eval: @plantUML.exec(@uid,`@input`)
 
