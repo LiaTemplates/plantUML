@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.6
+version:  0.0.7
 
 language: en
 
@@ -41,6 +41,8 @@ var draw = function () {
 };
 
 draw()
+
+undefined
 </script>
 
 <span>
