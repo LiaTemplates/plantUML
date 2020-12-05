@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.7
+version:  0.0.8
 
 language: en
 
@@ -14,39 +14,39 @@ comment:  A set of macros for plotting diagrams with plantUML in LiaScript. See
 
 script:   https://s.plantuml.com/synchro2.min.js
 
-@plantUML: @plantUML.exec(@uid,```@0```)
+@plantUML: @plantUML.exec(@uid,svg,```@0```)
 
-@plantUML.eval: @plantUML.exec(@uid,`@input`)
+@plantUML.svg: @plantUML.exec(@uid,svg,```@0```)
+
+@plantUML.png: @plantUML.exec(@uid,png,```@0```)
+
+@plantUML.eval: @plantUML.exec(@uid,@0,`@input`)
 
 @plantUML.exec
 <script>
 var draw = function () {
-  try {
-    let s = unescape(encodeURIComponent(`@1`));
+    let s = unescape(encodeURIComponent(`@2`));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
     }
     let compressor = new Zopfli.RawDeflate(arr);
     let compressed = compressor.compress();
-    let dest = "https://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
+    let dest = "https://www.plantuml.com/plantuml" + "/@1/"+encode64_(compressed);
 
     document.getElementById('plant@0').src = dest;
-    document.getElementById('plant@0').hidden = false;
+    document.getElementById('plant@0').style = "display: block";
 
     return dest;
-  } catch (e) {
-    setTimeout( draw, 100)
-  }
 };
 
-draw()
+let dest = draw()
 
-undefined
+console.log(dest)
 </script>
 
 <span>
-<img id="plant@0" src="@0" hidden="true">
+<img id="plant@0" src="@0" style="display:none">
 </span>
 
 @end
@@ -98,14 +98,76 @@ Bob -> Alice : hello
 @enduml
 ```
 
+The default image type is `svg`, however, you can overwrite this or make it
+explicit, by calling either `@plantUML.png` or `@plantUML.svg`. SVG might cause
+some problems in some browsers.
+
+```text @plantUML.png
+@startuml
+ditaa
+             Daten                 Daten
+               |                     |
+               |                     |
++--------------|---------------+     |
+| +------+     |               |     |     Funktionsauswahl
+| |      |     |               :     |        F_0 F_1 F_2
+| |      V     V               V     V         |   |   | Zielregister
+| | +----+-----+-----+    +----+-----+-----+   |   |   |  auswahl
+| | |cBFB Register A |    |cBFB Register B |   |   |   |     Z
+| | +---+------------+    +---------+------+   |   |   |     |
+| |     |                           |          |   |   |     |
+| |     |        +------------------+          |   |   |     |
+| |     |        |                  |          |   |   |     |
+| |     +--------+-----------+      |          |   |   |     |
+| |     |        |           |      |          |   |   |     |
+| |     V        V           V      V          |   |   |     |
+| | +----------------+    +----------------+   |   |   |     |
+| | |c808            |<-  |c808            |<--+   |   |     |
+| | | Demultiplexer  |<-  | Demultiplexer  |<------+   |     |
+| | |                |<-  |                |<----------+     |
+| | ++-+-+-+-+-+-+-+-+    ++-+-+-+-+-+-+-+-+                 |
+| |  | | | | | | | |       | | | | | | | |                   |
+| |  | | | | | | | |       V V V V V V V V                   |
+| |  | | | | | | | +----------------------------------+      |
+| |  | | | | | | +-----------------------------+      |      |
+| |  | | | | | +------------------------+      |      |      |
+| |  | | | | +-------------------+      |      |      |      |
+| |  | | | +--------------+      |      |      |      |      |
+| |  | | +---------+      |      |      |      |      |      |
+| |  | +----+      |      |      |      |      |      |      |
+| |  |      |      |      |      |      |      |      |      |
+| |  |  |   |  |   |  |   |  |   |  |   |  |   |  |   |  |   |
+| |  V  V   V  V   V  V   V  V   V  V   V  V   V  V   V  V   |
+| | +----+ +----+ +----+ +----+ +----+ +----+ +----+ +----+  |
+| | | 000| | 001| | 010| | 011| | 100| | 101| | 110| | 111|  |
+| | |cFF4| |cFF4| |cFF4| |cFF4| |cFF4| |cFF4| |cFF4| |cFF4|  |
+| | | OR | |AND | |EXOR| |ADD | |SUB | |MUL | |DIV | | SL |  |
+| | +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+  |
+| |   :      :      :      :      :      :      :      :     |
+| |   +------+------+------+---+--+------+------+------+     |
+| |                            |                             |
+| |                            V                             |
+| |                 +----------+----------+                  |
+| |                 |cCCB DeMuxer/Selektor|<-----------------+
+| |                 +---+-+---------------+
+| |                     : :                     |      |
+| +---------------------+ |                   --+---+--+
+|                         |                         | Status
++-------------------------+                         v S
+@enduml
+```
+
+
+
+
 ## `@plantUML.eval`
 
                          --{{0}}--
-
 Use a code-block with plantUML code and add the macro `@plantUML.eval` to the
 end of that block to get and editor, which contains the code and by clicking
-onto play, you trigger its evaluation. The displayed URL is also the source of
-the image.
+onto play, you trigger its evaluation. You have to pass the parameter `svg` or
+`png` to tell service, wheather you want to have an svg or png image back. The
+displayed URL is also the source of the image.
 
 
 ```
@@ -138,7 +200,7 @@ annotation SuppressWarnings
 
 @enduml
 ```
-@plantUML.eval
+@plantUML.eval(png)
 
 ## Implementation
 
@@ -149,37 +211,39 @@ The first one is a unique id and the second one contains the code.
 ````html
 script:   https://s.plantuml.com/synchro2.min.js
 
-@plantUML: @plantUML.exec(@uid,@0)
+@plantUML: @plantUML.exec(@uid,svg,```@0```)
 
-@plantUML.eval: @plantUML.exec(@uid,`@input`)
+@plantUML.svg: @plantUML.exec(@uid,svg,```@0```)
+
+@plantUML.png: @plantUML.exec(@uid,png,```@0```)
+
+@plantUML.eval: @plantUML.exec(@uid,@0,`@input`)
 
 @plantUML.exec
 <script>
 var draw = function () {
-  try {
-    let s = unescape(encodeURIComponent(`@1`));
+    let s = unescape(encodeURIComponent(`@2`));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
     }
     let compressor = new Zopfli.RawDeflate(arr);
     let compressed = compressor.compress();
-    let dest = "https://www.plantuml.com/plantuml" + "/svg/"+encode64_(compressed);
+    let dest = "https://www.plantuml.com/plantuml" + "/@1/"+encode64_(compressed);
 
     document.getElementById('plant@0').src = dest;
-    document.getElementById('plant@0').hidden = false;
+    document.getElementById('plant@0').style = "display: block";
 
     return dest;
-  } catch (e) {
-    setTimeout( draw, 100)
-  }
 };
 
-draw()
+let dest = draw()
+
+console.log(dest)
 </script>
 
 <span>
-<img id="plant@0" src="@0">
+<img id="plant@0" src="@0" style="display:none">
 </span>
 
 @end
