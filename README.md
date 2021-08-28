@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.8
+version:  0.0.9
 
 language: en
 
@@ -14,35 +14,40 @@ comment:  A set of macros for plotting diagrams with plantUML in LiaScript. See
 
 script:   https://s.plantuml.com/synchro2.min.js
 
-@plantUML: @plantUML.exec(@uid,svg,```@0```)
+@plantUML: @plantUML.exec(svg,```@0```)
 
-@plantUML.svg: @plantUML.exec(@uid,svg,```@0```)
+@plantUML.svg: @plantUML.exec(svg,```@0```)
 
-@plantUML.png: @plantUML.exec(@uid,png,```@0```)
-
-@plantUML.eval: @plantUML.exec(@uid,@0,`@input`)
+@plantUML.png: @plantUML.exec(png,```@0```)
 
 @plantUML.exec
-<script>
-var draw = function () {
-    let s = unescape(encodeURIComponent(`@2`));
+<script run-once modify="false">
+function draw(type, code, counter = 10) {
+  try {
+    let s = unescape(encodeURIComponent(code));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
     }
     let compressor = new Zopfli.RawDeflate(arr);
     let compressed = compressor.compress();
-    let dest = "https://www.plantuml.com/plantuml" + "/@1/"+encode64_(compressed);
+    let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-    document.getElementById('plant@0').src = dest;
-    document.getElementById('plant@0').style = "display: block";
 
-    return dest;
-};
+    send.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
 
-let dest = draw()
+    send.stop()
+  } catch(e) {
+    if (counter > 0) {
+      setTimeout(draw(type, code, counter - 1), 100)
+    } else {
+      send.stop()
+    }
+  }
+}
 
-console.log(dest)
+
+draw("@0", `@1`)
 </script>
 
 <span>
@@ -50,6 +55,42 @@ console.log(dest)
 </span>
 
 @end
+
+
+@plantUML.eval
+<script>
+function draw(type, code, counter = 10) {
+  try {
+    let s = unescape(encodeURIComponent(code));
+    var arr = [];
+    for (let i = 0; i < s.length; i++) {
+      arr.push(s.charCodeAt(i));
+    }
+    let compressor = new Zopfli.RawDeflate(arr);
+    let compressed = compressor.compress();
+    let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
+
+
+    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
+    console.log(dest)
+
+    send.lia("LIA: stop")
+  } catch(e) {
+    if (counter > 0) {
+      setTimeout(draw(type, code, counter - 1), 50)
+    } else {
+      send.lia("LIA: stop")
+    }
+  }
+}
+
+
+draw("@0", `@input`)
+""
+</script>
+@end
+
+
 -->
 
 # plantUML
@@ -80,6 +121,11 @@ it, as you wish.
 1. Load the macros via
 
    `import: https://raw.githubusercontent.com/liascript-templates/plantUML/master/README.md`
+
+   to import the latest version, but the API might change in the future, to load
+   this specific version load:
+
+   `import: https://github.com/LiaTemplates/plantUML/blob/0.0.9/README.md`
 
 2. Copy the definitions into your Project
 
@@ -211,41 +257,80 @@ The first one is a unique id and the second one contains the code.
 ````html
 script:   https://s.plantuml.com/synchro2.min.js
 
-@plantUML: @plantUML.exec(@uid,svg,```@0```)
+@plantUML: @plantUML.exec(svg,```@0```)
 
-@plantUML.svg: @plantUML.exec(@uid,svg,```@0```)
+@plantUML.svg: @plantUML.exec(svg,```@0```)
 
-@plantUML.png: @plantUML.exec(@uid,png,```@0```)
-
-@plantUML.eval: @plantUML.exec(@uid,@0,`@input`)
+@plantUML.png: @plantUML.exec(png,```@0```)
 
 @plantUML.exec
-<script>
-var draw = function () {
-    let s = unescape(encodeURIComponent(`@2`));
+<script run-once modify="false">
+function draw(type, code, counter = 10) {
+  try {
+    let s = unescape(encodeURIComponent(code));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
     }
     let compressor = new Zopfli.RawDeflate(arr);
     let compressed = compressor.compress();
-    let dest = "https://www.plantuml.com/plantuml" + "/@1/"+encode64_(compressed);
+    let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-    document.getElementById('plant@0').src = dest;
-    document.getElementById('plant@0').style = "display: block";
 
-    return dest;
-};
+    send.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
 
-let dest = draw()
+    send.stop()
+  } catch(e) {
+    if (counter > 0) {
+      setTimeout(draw(type, code, counter - 1), 100)
+    } else {
+      send.stop()
+    }
+  }
+}
 
-console.log(dest)
+
+draw("@0", `@1`)
 </script>
 
 <span>
 <img id="plant@0" src="@0" style="display:none">
 </span>
 
+@end
+
+
+@plantUML.eval
+<script>
+function draw(type, code, counter = 10) {
+  try {
+    let s = unescape(encodeURIComponent(code));
+    var arr = [];
+    for (let i = 0; i < s.length; i++) {
+      arr.push(s.charCodeAt(i));
+    }
+    let compressor = new Zopfli.RawDeflate(arr);
+    let compressed = compressor.compress();
+    let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
+
+
+    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
+    console.log(dest)
+
+    send.lia("LIA: stop")
+  } catch(e) {
+    if (counter > 0) {
+      setTimeout(draw(type, code, counter - 1), 50)
+    } else {
+      send.lia("LIA: stop")
+    }
+  }
+}
+
+
+draw("@0", `@input`)
+""
+</script>
 @end
 ````
 
