@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.9
+version:  0.0.10
 
 language: en
 
@@ -12,7 +12,19 @@ narrator: US English Male
 comment:  A set of macros for plotting diagrams with plantUML in LiaScript. See
           also https://plantuml.com for more information.
 
-script:   https://s.plantuml.com/synchro2.min.js
+script:   https://cdn-0.plantuml.com/synchro2.min.js
+
+@onload
+
+window.cleanDitaa = function(code) {
+  const pattern = /@startuml\nditaa/g 
+  if(code.match(pattern)) {
+    return code.replace(pattern, "@startditaa").replace(/@enduml/g, "@endditaa")
+  }
+  return code
+}
+
+@end
 
 @plantUML: @plantUML.exec(svg,```@0```)
 
@@ -24,7 +36,7 @@ script:   https://s.plantuml.com/synchro2.min.js
 <script run-once modify="false">
 function draw(type, code, counter = 10) {
   try {
-    let s = unescape(encodeURIComponent(code));
+    let s = unescape(encodeURIComponent(window.cleanDitaa(code)));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
@@ -33,15 +45,16 @@ function draw(type, code, counter = 10) {
     let compressed = compressor.compress();
     let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-
-    send.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
-
-    send.stop()
+    setTimeout(function() {
+      send.lia("HTML: <img style='max-width: 100%' src='" + dest + "' onclick='window.LIA.img.click(\"" + dest + "\")'>")
+    }, 100)
   } catch(e) {
     if (counter > 0) {
-      setTimeout(draw(type, code, counter - 1), 100)
+      setTimeout(function() {
+        draw(type, code, counter - 1)
+      }, 500)
     } else {
-      send.stop()
+      send.lia("LIA: stop")
     }
   }
 }
@@ -61,7 +74,7 @@ draw("@0", `@1`)
 <script>
 function draw(type, code, counter = 10) {
   try {
-    let s = unescape(encodeURIComponent(code));
+    let s = unescape(encodeURIComponent(window.cleanDitaa(code)));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
@@ -70,14 +83,13 @@ function draw(type, code, counter = 10) {
     let compressed = compressor.compress();
     let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-
-    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
+    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.LIA.img.click(\"" + dest + "\")'>")
     console.log(dest)
 
     send.lia("LIA: stop")
   } catch(e) {
     if (counter > 0) {
-      setTimeout(draw(type, code, counter - 1), 50)
+      setTimeout(function() {draw(type, code, counter - 1)}, 100)
     } else {
       send.lia("LIA: stop")
     }
@@ -125,7 +137,7 @@ it, as you wish.
    to import the latest version, but the API might change in the future, to load
    this specific version load:
 
-   `import: https://github.com/LiaTemplates/plantUML/blob/0.0.9/README.md`
+   `import: https://github.com/LiaTemplates/plantUML/blob/0.0.10/README.md`
 
 2. Copy the definitions into your Project
 
@@ -255,7 +267,19 @@ The two main-macros make use of `@plantUML.exec` which receives two parameters.
 The first one is a unique id and the second one contains the code.
 
 ````html
-script:   https://s.plantuml.com/synchro2.min.js
+script:   https://cdn-0.plantuml.com/synchro2.min.js
+
+@onload
+
+window.cleanDitaa = function(code) {
+  const pattern = /@startuml\nditaa/g 
+  if(code.match(pattern)) {
+    return code.replace(pattern, "@startditaa").replace(/@enduml/g, "@endditaa")
+  }
+  return code
+}
+
+@end
 
 @plantUML: @plantUML.exec(svg,```@0```)
 
@@ -267,7 +291,7 @@ script:   https://s.plantuml.com/synchro2.min.js
 <script run-once modify="false">
 function draw(type, code, counter = 10) {
   try {
-    let s = unescape(encodeURIComponent(code));
+    let s = unescape(encodeURIComponent(window.cleanDitaa(code)));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
@@ -276,15 +300,16 @@ function draw(type, code, counter = 10) {
     let compressed = compressor.compress();
     let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-
-    send.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
-
-    send.stop()
+    setTimeout(function() {
+      send.lia("HTML: <img style='max-width: 100%' src='" + dest + "' onclick='window.LIA.img.click(\"" + dest + "\")'>")
+    }, 100)
   } catch(e) {
     if (counter > 0) {
-      setTimeout(draw(type, code, counter - 1), 100)
+      setTimeout(function() {
+        draw(type, code, counter - 1)
+      }, 500)
     } else {
-      send.stop()
+      send.lia("LIA: stop")
     }
   }
 }
@@ -304,7 +329,7 @@ draw("@0", `@1`)
 <script>
 function draw(type, code, counter = 10) {
   try {
-    let s = unescape(encodeURIComponent(code));
+    let s = unescape(encodeURIComponent(window.cleanDitaa(code)));
     var arr = [];
     for (let i = 0; i < s.length; i++) {
       arr.push(s.charCodeAt(i));
@@ -313,14 +338,13 @@ function draw(type, code, counter = 10) {
     let compressed = compressor.compress();
     let dest = "https://www.plantuml.com/plantuml/" + type + "/" + encode64_(compressed);
 
-
-    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.img_Click(\"" + dest + "\")'>")
+    console.html("<img style='max-width: 100%' src='" + dest + "' onclick='window.LIA.img.click(\"" + dest + "\")'>")
     console.log(dest)
 
     send.lia("LIA: stop")
   } catch(e) {
     if (counter > 0) {
-      setTimeout(draw(type, code, counter - 1), 50)
+      setTimeout(function() {draw(type, code, counter - 1)}, 100)
     } else {
       send.lia("LIA: stop")
     }
