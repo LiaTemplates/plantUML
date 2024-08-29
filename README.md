@@ -3,7 +3,7 @@ author:   André Dietrich
 
 email:    LiaScript@web.de
 
-version:  0.0.10
+version:  0.0.11
 
 language: en
 
@@ -60,7 +60,7 @@ function draw(type, code, counter = 10) {
 }
 
 
-draw("@0", `@1`)
+draw("@0", `@'1`)
 </script>
 
 <span>
@@ -97,7 +97,7 @@ function draw(type, code, counter = 10) {
 }
 
 
-draw("@0", `@input`)
+draw("@0", `@'input`)
 ""
 </script>
 @end
@@ -137,7 +137,7 @@ it, as you wish.
    to import the latest version, but the API might change in the future, to load
    this specific version load:
 
-   `import: https://github.com/LiaTemplates/plantUML/blob/0.0.10/README.md`
+   `import: https://github.com/LiaTemplates/plantUML/blob/0.0.11/README.md`
 
 2. Copy the definitions into your Project
 
